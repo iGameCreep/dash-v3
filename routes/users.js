@@ -21,8 +21,17 @@ router.get('/guild/:gid/user/:id',ensureAuthenticated,(req,res) => {
 
     fetchmembers.then((members) => {
         const user = guild.members.cache.get(req.params.id)
+        let author = guild.members.fetch(profile.id).catch(console.log)
 
-        const author = guild.members.cache.get(req.user.id)
+        if (!author) {
+            req.flash('error', 'You are not in this guild !')
+            return res.redirect('/dash')
+        }
+
+        if (!author.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !author.permissions.has(Permissions.FLAGS.ADMINISTRATOR && author.id !== guild.ownerId)) {
+            req.flash('error', 'You are allowed to manage this guild !')
+            return res.redirect('/dash')
+        }
 
         res.render('home/user',{
             Permissions: Discord.Permissions,

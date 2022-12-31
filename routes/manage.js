@@ -16,13 +16,20 @@ const { count } = require('console');
 router.get('/guild/:gid/manage',ensureAuthenticated,(req,res) =>{
     var theme = jsonfile.readFileSync(themes);
     let fetchguilds = discord.client.guilds.fetch()
-
+    
     fetchguilds.then((gs) => {
         let guild = discord.client.guilds.cache.get(req.params.gid)
 
-        if (!guild) {
-          req.flash("error", "Le robot n'est pas dans ce serveur !")
-          return res.redirect(`/addbot/${req.params.gid}`)
+        let rauth = guild.members.fetch(profile.id).catch(console.log)
+
+        if (!rauth) {
+            req.flash('error', 'You are not in this guild !')
+            return res.redirect('/dash')
+        }
+
+        if (!rauth.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !rauth.permissions.has(Permissions.FLAGS.ADMINISTRATOR && rauth.id !== guild.ownerId)) {
+            req.flash('error', 'You are allowed to manage this guild !')
+            return res.redirect('/dash')
         }
 
         res.render('home/manage',{
