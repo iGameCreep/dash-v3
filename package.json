@@ -1,7 +1,7 @@
 {
   "name": "discord-bot-dashboard-v3",
   "version": "1.0.0",
-  "description": "Discord BOT Dashboard is made to make Discord BOT Development easy, designed to create applications without having to write a single line of code while using a user friendly Web-Dashboard!",
+  "description": "Discord BOT Dashboard is made to make Discord BOT Development and use for users easy, designed to use and create applications while using a user friendly Web-Dashboard and let users manage their servers easily !",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
