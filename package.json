@@ -8,15 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LachlanDev/Discord-BOT-Dashboard-V2.git"
+    "url": "git+https://github.com/iGameCreep/Dash-V3.git"
   },
-  "author": "LachlanDev",
+  "author": "GameCreep35 & LachlanDev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LachlanDev/Discord-BOT-Dashboard-V2/issues"
+    "url": "https://github.com/iGameCreep/Dash-V3/issues"
   },
-  "homepage": "https://github.com/LachlanDev/Discord-BOT-Dashboard-V2#readme",
+  "homepage": "https://github.com/iGameCreep/Dash-V3#readme",
   "dependencies": {
+    "chalk": "^4.1.1",
     "connect-flash": "^0.1.1",
     "dateformat": "^4.5.1",
     "discord.js": "^13.8.0",
@@ -33,7 +34,6 @@
     "lolcatjs": "^2.4.1",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
-    "mysql": "^2.18.1",
     "node-fetch": "^2.6.2",
     "passport": "^0.4.1",
     "passport-discord": "^0.1.4",
