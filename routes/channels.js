@@ -23,25 +23,27 @@ router.get('/guild/:gid/channels', ensureAuthenticated,(req, res) => {
 
         let rauth = guild.members.fetch(profile.id).catch(console.log)
 
-        if (!rauth) {
-            req.flash('error', 'You are not in this guild !')
-            return res.redirect('/dash')
-        }
-
-        if (!rauth.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !rauth.permissions.has(Permissions.FLAGS.ADMINISTRATOR && rauth.id !== guild.ownerId)) {
-            req.flash('error', 'You are allowed to manage this guild !')
-            return res.redirect('/dash')
-        }
-
-        res.render('home/channels', {
-            profile:req.user,
-            client:discord.client,
-            theme:theme,
-            all:req,
-            config: config,
-            guild: guild,
-            channels: channels
-        }) 
+        rauth.then((rauth) => {
+            if (!rauth) {
+                req.flash('error', 'You are not in this guild !')
+                return res.redirect('/dash')
+            }
+    
+            if (!rauth.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !rauth.permissions.has(Permissions.FLAGS.ADMINISTRATOR && rauth.id !== guild.ownerId)) {
+                req.flash('error', 'You are allowed to manage this guild !')
+                return res.redirect('/dash')
+            }
+    
+            res.render('home/channels', {
+                profile:req.user,
+                client:discord.client,
+                theme:theme,
+                all:req,
+                config: config,
+                guild: guild,
+                channels: channels
+            }) 
+        })
     })   
 })
   

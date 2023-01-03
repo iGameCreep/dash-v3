@@ -188,6 +188,9 @@
                               <label for="boost-count"><strong>Boost count:</strong></label><br>
                               <input type="text" id="boost-count" name="boost-count" class="form-control" value="<%= guild.premiumSubscriptionCount %>" disabled><br>
 
+                              <label for="community"><strong>Community:</strong></label><br>
+                              <input type="text" id="community" name="community" class="form-control" value="<%= guild.features?.includes('COMMUNITY') %>" disabled><br>
+
                               <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save">
                             </form>      
                         </div>

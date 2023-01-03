@@ -8,7 +8,7 @@ const themes = "./config/theme.json"
 const jsonfile = require('jsonfile')
 const config = require("../config/config.json")
 const Discord = require("discord.js")
-const { PermissionsBitField } = require("discord.js")
+const { PermissionsBitField, Permissions } = require("discord.js")
 const fs = require("fs")
 const ppath = require("path");
 const { count } = require('console');
@@ -20,19 +20,20 @@ router.get('/guild/:gid/manage',ensureAuthenticated,(req,res) =>{
     fetchguilds.then((gs) => {
         let guild = discord.client.guilds.cache.get(req.params.gid)
 
-        let rauth = guild.members.fetch(profile.id).catch(console.log)
+        let rauth = guild.members.fetch(req.user.id).catch(console.log)
 
-        if (!rauth) {
+        rauth.then((rauth) => {
+          if (!rauth) {
             req.flash('error', 'You are not in this guild !')
             return res.redirect('/dash')
-        }
+          }
 
-        if (!rauth.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !rauth.permissions.has(Permissions.FLAGS.ADMINISTRATOR && rauth.id !== guild.ownerId)) {
+          if (!rauth.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !rauth.permissions.has(Permissions.FLAGS.ADMINISTRATOR && rauth.id !== guild.ownerId)) {
             req.flash('error', 'You are allowed to manage this guild !')
             return res.redirect('/dash')
-        }
+          }
 
-        res.render('home/manage',{
+          res.render('home/manage',{
             Permissions: Discord.Permissions,
             PermissionsBitField : PermissionsBitField,
             manage: Discord.Permissions.FLAGS.MANAGE_GUILD,
@@ -43,6 +44,7 @@ router.get('/guild/:gid/manage',ensureAuthenticated,(req,res) =>{
             theme:theme,
             config:config,
             guild: guild,
+          })
         })
     })
 })
