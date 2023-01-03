@@ -1,0 +1,12 @@
+{
+
+    "COMMENT": "CHECK THE README.MD IF YOU DON'T UNDERSTAND WHAT TO PUT HERE !",
+
+    "clientID":"Bot ID",
+    "clientSecret":"Bot Secret",
+    "callbackURL":"Callback URL",
+    "Admin":["Your user ID"],
+    "token":"Bot Token",
+    "prefix":"/",
+    "port":"3000"
+}
