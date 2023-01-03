@@ -1,7 +1,7 @@
 {
   "name": "discord-bot-dashboard-v3",
   "version": "1.0.0",
-  "description": "Discord BOT Dashboard is made to make Discord BOT Development and use for users easy, designed to use and create applications while using a user friendly Web-Dashboard and let users manage their servers easily !",
+  "description": "Discord BOT Dashboard is made to make Discord BOT Development and use for users easy, designed to use and create applications while using a user friendly Web-Dashboard and let users manage their servers easily !<<<<",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -35,7 +35,7 @@
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
     "node-fetch": "^2.6.2",
-    "passport": "^0.4.1",
+    "passport": "^0.6.0",
     "passport-discord": "^0.1.4",
     "request": "^2.88.2",
     "socket.io": "^4.2.0"
