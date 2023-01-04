@@ -21,7 +21,7 @@ router.get('/guild/:gid/channels', ensureAuthenticated,(req, res) => {
         let guild = discord.client.guilds.cache.get(gid)
         let channels = guild.channels.cache
 
-        let rauth = guild.members.fetch(profile.id).catch(console.log)
+        let rauth = guild.members.fetch(req.user.id).catch(console.log)
 
         rauth.then((rauth) => {
             if (!rauth) {

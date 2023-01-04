@@ -105,7 +105,11 @@
                             <% if (channel.type === "GUILD_CATEGORY") return; %>
                             <div class="col-lg-4">
                                 <div class="card">
+                                  <% if (channel.type === "GUILD_TEXT") { %>
                                     <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/HKMW1Bw/channel-icon.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
+                                  <% } else if (channel.type === "GUILD_VOICE") { %>
+                                    <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/9TDvSfv/Zh9vjp5B.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
+                                  <% } %>
                                     <div class="card-body">
                                         <p class="card-text"><strong>Channel Name:</strong> <%= channel.name %> </p>
                                         <p class="card-text"><strong>Channel ID:</strong> <%= channel.id %> </p>
