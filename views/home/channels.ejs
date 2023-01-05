@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title> Channels - <%= guild.name %> | <%=client.user.username%> </title>
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@0ac23ca/css/all.css" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js">
-    <link rel="stylesheet" href="../../../<%=theme.theme%>" data-skin="default">
+    <link rel="stylesheet" href="../../../<%= theme.theme %>">
   </head>
   <body>
     <div class="app">
@@ -105,25 +105,34 @@
                             <% if (channel.type === "GUILD_CATEGORY") return; %>
                             <div class="col-lg-4">
                                 <div class="card">
-                                  <% if (channel.type === "GUILD_TEXT") { %>
+                                  <% if (channel.type === "GUILD_TEXT" && channel.id !== guild.rulesChannelId) { %>
                                     <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/HKMW1Bw/channel-icon.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
-                                  <% } %>
-                                  <% if (channel.type === "GUILD_VOICE") { %>
+                                  <% } else if (channel.type === "GUILD_VOICE") { %>
                                     <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/9TDvSfv/Zh9vjp5B.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
+                                  <% } else if (channel.id === guild.rulesChannelId) { %>
+                                    <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/F6c8cjS/rules.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
+                                  <% } else if (channel.type === "GUILD_NEWS") { %>
+                                    <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/2PbpQ9j/announcements.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
+                                  <% } else if (channel.type === "GUILD_STAGE_VOICE") { %>
+                                    <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/DVNYKKJ/conf.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
+                                  <% } else if (channel.type === "GUILD_PUBLIC_THREAD") { %>
+                                    <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/s1dbQY5/thread.png" style="background-color: #808080 ;"></figure> <%= channel.name %></div>
                                   <% } %>
                                     <div class="card-body">
                                         <p class="card-text"><strong>Channel Name:</strong> <%= channel.name %> </p>
                                         <p class="card-text"><strong>Channel ID:</strong> <%= channel.id %> </p>
                                         <p class="card-text"><strong>Channel Type:</strong> <%= channel.type %> </p>
-                                        <p class="card-text"><strong>NSFW:</strong> <%= channel.nsfw %> </p>
+                                        <p class="card-text"><strong>NSFW:</strong> <%= channel.nsfw || "false" %> </p>
                                         <% if (channel.parentId) { %>
                                             <% const cat = channels.get(channel.parentId) %>
-                                            <p class="card-text"><strong>Category Name:</strong> <%= cat.name %> </p>
-                                            <p class="card-text"><strong>Category ID:</strong> <%= cat.id %> </p>
+                                            <% if (cat) { %>
+                                              <p class="card-text"><strong>Category Name:</strong> <%= cat.name %> </p>
+                                              <p class="card-text"><strong>Category ID:</strong> <%= cat.id %> </p>
+                                            <% } %>
                                         <% } %>
                                     </div>
                                     <div class="card-footer-item">
-                                        <a type="button" class="btn btn-primary" href="/guild/<%= guild.id %>/channel/<%= channel.id %>/remove"> Remove channel</a>
+                                        <a type="button" class="btn btn-primary" href="/guild/<%= guild.id %>/channel/<%= channel.id %>/edit"> Edit channel</a>
                                     </div>
                                 </div>
                             </div>
