@@ -8,10 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js">
-    <link rel="stylesheet" href="../<%=theme.theme%>" data-skin="default">
-    <% if (!config.Admin.includes(profile.id)) { %>
-      <meta http-equiv="refresh" content="0.5; URL=dash" />
-    <% } %>
+    <link rel="stylesheet" href="../../<%=theme.theme%>" data-skin="default">
   </head>
   <body>
     <div class="app">
@@ -26,19 +23,15 @@
             </div>
             <div class="top-bar-item top-bar-item-right px-0 d-none d-sm-flex">
               <div class="dropdown d-none d-md-flex">
-                <% if (config.Admin.includes(profile.id)) { %>
-                  <% if (profile.avatar) { %>
-                    <button class="btn-account" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="user-avatar user-avatar-md"><img src="https://cdn.discordapp.com/avatars/<%= profile.id %>/<%= profile.avatar %>" alt=""></span> <span class="account-summary pr-lg-4 d-none d-lg-block"><span class="account-name"><%= profile.username %></span> <span class="account-description">Admin</span></span></button>
-                  <% } else { %>
-                    <button class="btn-account" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="user-avatar user-avatar-md"><img src="https://cdn.glitch.com/82fe990a-7942-42e3-9790-39807ccdb9f6%2Ficon-404-dark.png?v=1602427904949" alt=""></span> <span class="account-summary pr-lg-4 d-none d-lg-block"><span class="account-name"><%= profile.username %></span> <span class="account-description">Admin</span></span></button>
-                  <% } %>
-                <% } else { %>
-                  <% if (profile.avatar) { %>
-                    <button class="btn-account" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="user-avatar user-avatar-md"><img src="https://cdn.discordapp.com/avatars/<%= profile.id %>/<%= profile.avatar %>" alt=""></span> <span class="account-summary pr-lg-4 d-none d-lg-block"><span class="account-name"><%= profile.username %></span> <span class="account-description">User</span></span></button>
-                  <% } else { %>
-                    <button class="btn-account" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="user-avatar user-avatar-md"><img src="https://cdn.glitch.com/82fe990a-7942-42e3-9790-39807ccdb9f6%2Ficon-404-dark.png?v=1602427904949" alt=""></span> <span class="account-summary pr-lg-4 d-none d-lg-block"><span class="account-name"><%= profile.username %></span> <span class="account-description">User</span></span></button>
-                  <% } %>
-                <% } %>
+                <button class="btn-account" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="user-avatar user-avatar-md">
+                    <img src="https://cdn.discordapp.com/avatars/<%= profile.id %>/<%= profile.avatar %>" alt="">
+                  </span> 
+                  <span class="account-summary pr-lg-4 d-none d-lg-block">
+                    <span class="account-name"><%= profile.username %></span> 
+                    <span class="account-description">Admin</span>
+                  </span>
+                </button> <!-- .dropdown-menu -->
                 <div class="dropdown-menu">
                   <div class="dropdown-arrow d-lg-none" x-arrow=""></div>
                   <div class="dropdown-arrow ml-3 d-none d-lg-block"></div>

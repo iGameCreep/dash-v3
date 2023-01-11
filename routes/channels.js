@@ -12,6 +12,8 @@ const jsonfile = require('jsonfile')
 
 const themes = "./config/theme.json"
 
+// URL GUILD CHANNELS
+
 router.get('/guild/:gid/channels', ensureAuthenticated,(req, res) => {
     let gid = req.params.gid 
     var theme = jsonfile.readFileSync(themes);
@@ -19,17 +21,37 @@ router.get('/guild/:gid/channels', ensureAuthenticated,(req, res) => {
 
     fetchguilds.then(gs => {
         let guild = discord.client.guilds.cache.get(gid)
+
+        // check if bot is in the guild
+
+        if (!guild) {
+            req.flash('error', "The bot isn't in this guild !")
+            res.redirect(`/addbot/${gid}`)
+        }
+
         let channels = guild.channels.cache
 
-        let rauth = guild.members.fetch(req.user.id).catch(console.log)
+        let fetchmembers = guild.members.fetch({ cache: true })
 
-        rauth.then((rauth) => {
-            if (!rauth) {
+        // put all members in cache
+
+        fetchmembers.then(() => {
+            let user = guild.members.cache.get(req.user.id)
+
+            // check if user is in the guild
+
+            if (!user) {
                 req.flash('error', 'You are not in this guild !')
                 return res.redirect('/dash')
             }
+
+            // check if user has manage channels or admin permissions
+
+            let highest = user.roles.highest
+            let channelPerm = Permissions.FLAGS.MANAGE_CHANNELS
+            let adminPerm = Permissions.FLAGS.ADMINISTRATOR
     
-            if (!rauth.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !rauth.permissions.has(Permissions.FLAGS.ADMINISTRATOR && rauth.id !== guild.ownerId)) {
+            if (!user.permissions.has(channelPerm) && !user.permissions.has(adminPerm) && !highest.permissions.has(channelPerm) && !highest.permissions.has(adminPerm) && guild.ownerId !== req.user.id) {
                 req.flash('error', 'You are allowed to manage this guild !')
                 return res.redirect('/dash')
             }
@@ -46,5 +68,11 @@ router.get('/guild/:gid/channels', ensureAuthenticated,(req, res) => {
         })
     })   
 })
-  
+
+// redirect
+
+router.get('/guild/:gid/channel/:cid', ensureAuthenticated, (req, res) => {
+    res.redirect(`/guild/${req.params.gid}/channel/${req.params.cid}/edit`)
+})
+
 module.exports = router;

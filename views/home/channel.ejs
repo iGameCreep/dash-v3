@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js">
-    <link rel="stylesheet" href="../../../<%=theme.theme%>" data-skin="default">
+    <link rel="stylesheet" href="../../../../../<%=theme.theme%>" data-skin="default">
   </head>
   <body>
     <div class="app">
@@ -158,136 +158,33 @@
                     </div>
                 <% } %> 
                 
-                    <h4> Guild</h4>
-                    <p class="text-muted"> Here are all the informations about <strong>"<%= guild.name %>"</strong> ! Feel free to edit !</p>  
+                    <h4> Channel</h4>
+                    <p class="text-muted"> Here are all the informations about the channel <strong><%= channel.name %></strong> ! Feel free to edit !</p>  
                         <div class="card bg-secondary">
-                          <div class="card-header"> 🛠️ "<%= guild.name %>" Settings</div>
+                          <div class="card-header"> 🛠️ <%= channel.name %> Settings</div>
                           <div class="card-body">
-                            <p class="card-text"> Configure your guild directly from the dashboard !<br>
+                            <p class="card-text"> Configure your channel directly from the dashboard !<br>
                             </p>       
-                            <form id="config-guild" action="/guild/<%= guild.id %>/name/edit" method="POST">
+                            <form id="channelname" action="/guild/<%= guild.id %>/channel/<%= channel.id %>/name" method="POST">
+                                <label for="channelname"><strong>Channel Name:</strong></label><br>
+                                <input type="text" id="channelname" name="channelname" class="form-control" value="<%= channel.name %>"><br>
 
-                              <label for="guildname"><strong>Guild Name:</strong></label><br>
-                              <input type="text" id="guildname" name="guildname" class="form-control" value="<%= guild.name %>"><br>
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" onclick="submit()" value="Change Channel Name">
+                            </form>
+                            <br><br>
+                            <% if (guild.features?.includes("COMMUNITY")) { %>
+                              <form id="rule-channel" action="/guild/<%= guild.id %>/channel/<%= channel.id %>/rules" method="POST">
+                                <label for="rule-checkbox"><strong>Set Channel As Rules Channel:</strong></label><br>
+                                <input type="checkbox" class="checkbox" name="rule-checkbox" id="rule-checkbox"><br>
 
-                              <label for="guildID"><strong>Guild ID:</strong></label><br>
-                              <input type="text" id="guildID" name="guildID" class="form-control" value="<%= guild.id %>" disabled><br>
-
-                              <label for="member-count"><strong>Member count:</strong></label><br>
-                              <input type="text" id="member-count" name="member-count" class="form-control" value="<%= guild.memberCount %>" disabled><br>
-
-                              <label for="channel-count"><strong>Channel count:</strong></label><br>
-                              <input type="text" id="channel-count" name="channel-count" class="form-control" value="<%= guild.channels.channelCountWithoutThreads %>" disabled><br>
-
-                              <label for="role-count"><strong>Channel count:</strong></label><br>
-                              <input type="text" id="role-count" name="role-count" class="form-control" value="<%= guild.roles.cache.size %>" disabled><br>
-                              
-                              <label for="emoji-count"><strong>Emoji count:</strong></label><br>
-                              <input type="text" id="emoji-count" name="emoji-count" class="form-control" value="<%= guild.emojis.cache.size %>" disabled><br>
-
-                              <label for="boost-count"><strong>Boost count:</strong></label><br>
-                              <input type="text" id="boost-count" name="boost-count" class="form-control" value="<%= guild.premiumSubscriptionCount %>" disabled><br>
-
-                              <label for="community"><strong>Community:</strong></label><br>
-                              <input type="text" id="community" name="community" class="form-control" value="<%= guild.features?.includes('COMMUNITY') %>" disabled><br>
-
-                              <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save">
-                            </form>      
-                        </div>
-                  </div>
-                        <div class="card bg-secondary">
-                          <div class="card-header"> 🎨 Guild Settings</div>
-                          <div class="card-body">
-                            <p class="card-text"> Customization options for your guild ! Here, you can set your guild icon and banner !<br>
-                            </p>
-                            <label for="ABC"><strong>Import icon:</strong></label><br>
-                            <p id="ICON-TEXT" class="text-muted"> Please note that GIF format won't work correctly because your guild doesn't have the number of boosts necessary to get a banner ( unlocked on Tier 2 ).</p>
-                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#upload" id="ABC">Import</button>
-                            <br>
-                            <br>
-                            <label for="BANNER-BTN" id="BANNER-LABEL"><strong>Import banner:</strong></label><br>
-                            <p id="BANNER-TEXT"> You can't set a banner for this guild because your guild doesn't have the number of boosts necessary to get a banner ( unlocked on Tier 2 ).</p>
-                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#upload2" id="BANNER-BTN" >Import</button>
-                            <br>
-                            <br>
-
-                            <% if (guild.premiumTier === "TIER_2" || guild.premiumTier === "TIER_3") { %>
-                              <script>
-                                document.getElementById("BANNER-BTN").hidden = true;
-                                document.getElementById("BANNER-TEXT").hidden = true;
-                              </script>
-                            <% } %>
-                            <% if (guild.premiumTier === "TIER_1" || guild.premiumTier === "TIER_2" || guild.premiumTier === "TIER_3") { %>
-                              <script>
-                                document.getElementById("ICON-TEXT").hidden = true;
-                              </script>
+                                <br><input type="submit" class="btn btn-primary btn-lg btn-block" onclick="submit()" value="Save">
+                              </form>  
                             <% } %>
                         </div>
-                  </div>
-              </div>
-            </div>
-        </div>
-        <!-- Import Model -->
-        <div class="modal modal-alert fade" id="upload" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="uploadLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 id="uploadLabel" class="modal-title">
-                  <i class="fa fa-file-import text-success mr-1"></i> Icon Import</h5>
-              </div>
-              <div class="modal-body">
-                <p> Please select the image file you would like to set your guild icon to !</p>
-                <p class="text-muted">Accepted formats : PNG, JPG, JPEG, GIF</p>
-                <form ref='uploadForm' id='uploadForm' action='/guild/<%= guild.id %>/upload/icon' method='post' encType="multipart/form-data">
-                <div class="d-flex justify-content-center">
-                  <label class="btn btn-warning">
-                    <% if (guild.premiumTier === "TIER_2" || guild.premiumTier === "TIER_3") { %>
-                    <input id="file-upload" type="file" name="sampleFile" hidden accept=".png, .jpg, .jpeg, .gif" />
-                    <% } else { %>
-                      <input id="file-upload" type="file" name="sampleFile" hidden accept=".png, .jpg, .jpeg" />
-                    <% } %>
-                    <span><i class="fas fa-upload"></i> Upload File</span>
-                  </label>
+                    </div>
                 </div>
-                <p class="text-center" id="file-name"></p>
-                </form>
-              </div>
-              <div class="modal-footer">
-                  <button id="uploadButton" type="submit" form="uploadForm" value="Submit" class="btn btn-warning" hidden>Upload</button>                               
-                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-              </div>
             </div>
-          </div>
         </div>
-        <div class="modal modal-alert fade" id="upload2" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="uploadLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 id="uploadLabel" class="modal-title">
-                  <i class="fa fa-file-import text-success mr-1"></i> Banner Import</h5>
-              </div>
-              <div class="modal-body">
-                <p> Please select the image file you would like to set your guild banner to !</p>
-                <p class="text-muted">Accepted formats : PNG, JPG, JPEG, GIF</p>
-                <form ref='uploadForm' id='uploadForm' action='/guild/<%= guild.id %>/upload/banner' method='post' encType="multipart/form-data">
-                <div class="d-flex justify-content-center">
-                  <label class="btn btn-warning">
-                    <input id="file-upload2" type="file" name="bannerFile" hidden accept=".png, .jpg, .jpeg, .gif" />
-                    <span><i class="fas fa-upload"></i> Upload File</span>
-                  </label>
-                </div>
-                <p class="text-center" id="file-name2"></p>
-                </form>
-              </div>
-              <div class="modal-footer">
-                  <button id="uploadButton2" type="submit" form="uploadForm" value="Submit" class="btn btn-warning" hidden>Upload</button>                               
-                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-        <!-- End Import Model -->
         <footer class="app-footer">
           <ul class="list-inline">
             <li class="list-inline-item">
@@ -311,18 +208,6 @@
     <script src="../home/assets/vendor/popper-js/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script> 
     <script src="../home/assets/javascript/theme.min.js"></script> 
-    <script>
-      document.querySelector("#file-upload").onchange = function(){
-        document.querySelector("#file-name").textContent = this.files[0].name + " is ready for upload!";
-        document.getElementById("uploadButton").hidden = false;
-      }
-    </script>
-    <script>
-      document.querySelector("#file-upload2").onchange = function(){
-        document.querySelector("#file-name2").textContent = this.files[0].name + " is ready for upload!";
-        document.getElementById("uploadButton2").hidden = false;
-      }
-    </script>
 </html>
 
 

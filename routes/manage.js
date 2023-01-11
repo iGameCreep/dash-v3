@@ -13,26 +13,50 @@ const fs = require("fs")
 const ppath = require("path");
 const { count } = require('console');
 
+// define function to wait
+
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+} 
+
+// URL TO EDIT GUILD
+
 router.get('/guild/:gid/manage',ensureAuthenticated,(req,res) =>{
-    var theme = jsonfile.readFileSync(themes);
-    let fetchguilds = discord.client.guilds.fetch()
-    
-    fetchguilds.then((gs) => {
-        let guild = discord.client.guilds.cache.get(req.params.gid)
+  var theme = jsonfile.readFileSync(themes);
+  let fetchguilds = discord.client.guilds.fetch({ cache: true })
 
-        let rauth = guild.members.fetch(req.user.id).catch(console.log)
+  // put all guilds in cache
+  
+  fetchguilds.then(() => {
+      let guild = discord.client.guilds.cache.get(req.params.gid)
 
-        rauth.then((rauth) => {
-          if (!rauth) {
-            req.flash('error', 'You are not in this guild !')
-            return res.redirect('/dash')
-          }
+      // check if bot is in the guild
 
-          if (!rauth.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !rauth.permissions.has(Permissions.FLAGS.ADMINISTRATOR && rauth.id !== guild.ownerId)) {
+      if (!guild) {
+        req.flash("error", "The bot isn't in this guild !")
+        res.redirect(`/addbot/${req.params.gid}`)
+      } 
+        
+      let user = guild.members.fetch(req.user.id).catch(console.log)
+
+      // check if user is in the guild
+
+      user.then((user) => {
+        if (!user) {
+          req.flash('error', 'You are not in this guild !')
+          return res.redirect('/dash')
+        } 
+
+        // check if user has admin or manage guild permissions
+        
+        let managePerm = Permissions.FLAGS.MANAGE_GUILD
+        let adminPerm = Permissions.FLAGS.ADMINISTRATOR
+
+        if (!user.permissions.has(managePerm) && !user.permissions.has(adminPerm) && !user.roles.highest.permissions.has(managePerm) && !user.roles.highest.permissions.has(adminPerm) && guild.ownerId !== req.user.id) {
             req.flash('error', 'You are allowed to manage this guild !')
             return res.redirect('/dash')
-          }
-
+        }
+        
           res.render('home/manage',{
             Permissions: Discord.Permissions,
             PermissionsBitField : PermissionsBitField,
@@ -45,18 +69,51 @@ router.get('/guild/:gid/manage',ensureAuthenticated,(req,res) =>{
             config:config,
             guild: guild,
           })
-        })
-    })
+      })
+  })
 })
 
+// EDIT GUILD NAME
+
 router.post('/guild/:gid/name/edit', ensureAuthenticated,function(req, res) {
-  let fetchguilds = discord.client.guilds.fetch()
+  let fetchguilds = discord.client.guilds.fetch({ cache: true })
 
-    fetchguilds.then((gs) => {
-      let guild = discord.client.guilds.cache.get(req.params.gid)
+  // put all guilds in cache
+    
+  fetchguilds.then(() => {
+    let guild = discord.client.guilds.cache.get(req.params.gid)
 
-      let oldname = guild.name
-      let name = req.body.guildname
+    // check if bot is in the guild
+
+    if (!guild) {
+      req.flash("error", "The bot isn't in this guild !")
+      res.redirect(`/addbot/${req.params.gid}`)
+    } 
+
+    let oldname = guild.name
+    let name = req.body.guildname
+      
+    let user = guild.members.fetch(req.user.id).catch(console.log)
+
+    // check if user is in the guild
+
+    user.then((user) => {
+      if (!user) {
+        req.flash('error', 'You are not in this guild !')
+        return res.redirect('/dash')
+      } 
+      
+      // check if user has manage guild or admin permissions
+
+      let managePerm = Permissions.FLAGS.MANAGE_GUILD
+      let adminPerm = Permissions.FLAGS.ADMINISTRATOR
+
+      if (!user.permissions.has(managePerm) && !user.permissions.has(adminPerm) && !user.roles.highest.permissions.has(managePerm) && !user.roles.highest.permissions.has(adminPerm) && guild.ownerId !== req.user.id) {
+          req.flash('error', 'You are not allowed to manage this guild !')
+          return res.redirect('/dash')
+      }
+
+      // try to change the name and handle error
 
       try {
         guild.setName(name)
@@ -67,123 +124,174 @@ router.post('/guild/:gid/name/edit', ensureAuthenticated,function(req, res) {
         }
       }
 
-      req.flash("success", `Successfully renamed "${oldname}" to "${name}" !`)
+      req.flash("success", `Successfully renamed guild "${oldname}" to "${name}" !`)
       return res.redirect(`/guild/${req.params.gid}/manage`)
     })
+  })
 })
 
-
-
+// UPLOAD ICON FOR GUILD
 
 router.post('/guild/:gid/upload/icon', ensureAuthenticated,function(req, res) {
-    function delay(time) {
-      return new Promise(resolve => setTimeout(resolve, time));
-    } 
+  let fetchguilds = discord.client.guilds.fetch({ cache: true })
 
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return req.flash('error', `No file was uploaded, please try again!`), 
-      res.redirect(`/guild/${req.params.gid}/manage`)
-    } 
+  // put all guilds in cache
 
-    let ID = require('../Fonctions/createID')("ICON")
-    
-    ID.then((ID) => {
+  fetchguilds.then(() => {
+    const guild = discord.client.guilds.cache.get(req.params.gid)
 
-      const path = `./icons/${req.files.sampleFile.name}`
-      let ext = ppath.extname(path)
+    // check if bot is in the guild
 
-      let fetchguilds = discord.client.guilds.fetch()
-      let sampleFile = req.files.sampleFile;
+    if (!guild) {
+      req.flash('error', "The bot isn't in that guild !")
+      return res.redirect(`/addbot/${req.params.gid}`)
+    }  
 
-      function check(path) {
-        if(!fs.existsSync(path)) {
-          let path2 = `./icons/${ID + ext}`
-          let a = `./icons/${ID + ext}`
-          sampleFile.rename(a, function(err) { if (err) throw err })
-          sampleFile.mv(path2, function(err) { if (err) throw err })
-          return path2
-        } else {
-          sampleFile.mv(path, function(err) {
-            if (err) 
-              return res.status(500).send(err);
-          });
-          return false
-        }
+    const fetchmembers = guild.members.fetch({ cache: true })
+
+    // put all members in cache
+
+    fetchmembers.then(() => {
+      let user = guild.members.cache.get(req.user.id)
+
+      // check if user is in the guild
+
+      if (!user) {
+        req.flash('error', 'You are not in that guild !')
+        return res.redirect('/dash')
       }
+
+      // check if user has manage guild or admin permissions
+
+      let managePerm = Permissions.FLAGS.MANAGE_GUILD
+      let adminPerm = Permissions.FLAGS.ADMINISTRATOR
+
+      if (!user.permissions.has(managePerm) && !user.permissions.has(adminPerm) && !user.roles.highest.permissions.has(managePerm) && !user.roles.highest.permissions.has(adminPerm) && guild.ownerId !== req.user.id) {
+          req.flash('error', 'You are not allowed to manage this guild !')
+          return res.redirect('/dash')
+      }
+
+      // check if there are any files
+
+      if (!req.files || Object.keys(req.files).length === 0) {
+        return req.flash('error', `No file was uploaded, please try again!`), 
+        res.redirect(`/guild/${req.params.gid}/manage`)
+      } 
+
+      let sampleFile = req.files.sampleFile;
+      let path = `./icons/${sampleFile.name}`
+
+      // if a file with that name isn't deleted, it deletes it
+
+      if (fs.existsSync(path)) fs.rmSync(path)
+
+      // temporarely move file to icons folder
+      
+      sampleFile.mv(path)
+
+      // function to set the icon and then delete the file
+
+      function seti(path) {
+        guild.setIcon(path)
+        delay(3000).then(() => { 
+          fs.rmSync(path)
+        })
+      }
+
+      // wait for the file to be uploaded and then use the function
 
       delay(3000).then(() => {
-    
-        fetchguilds.then(() => {
-    
-          let guild = discord.client.guilds.cache.get(req.params.gid)
-    
-          if(check(path)) {
-            guild.setIcon(path2)
-            delay(3000).then(fs.unlinkSync(path2))
-          } else {
-            guild.setIcon(path)
-            delay(3000).then(fs.unlinkSync(path))
-          }
-                  
-          req.flash('success', `Icon ${sampleFile.name} successfully uploaded for guild ${guild.name}!`)
-          res.redirect(`/guild/${req.params.gid}/manage`)
-        })
+        seti(path)
+
+        req.flash("success", `Icon ${sampleFile.name} uploaded sucessfully !`)
+        return res.redirect(`/guild/${req.params.gid}/manage`)
       })
     })
+  })
 });
 
+// UPLOAD BANNER FOR GUILD
+
 router.post('/guild/:gid/upload/banner', ensureAuthenticated,function(req, res) {
-  function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-  } 
+  let fetchguilds = discord.client.guilds.fetch({ cache: true })
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return req.flash('error', `No file was uploaded, please try again!`), 
-    res.redirect(`/guild/${req.params.gid}/manage`)
-  } 
+  // put all guilds in cache
 
-  let ID = require('../Fonctions/createID')("BANNER")
-  
-  ID.then((ID) => {
+  fetchguilds.then(() => {
+    const guild = discord.client.guilds.cache.get(req.params.gid)
+    
+    // check if bot is in the guild
 
-    const path = `./icons/${req.files.bannerFile.name}`
-    let ext = ppath.extname(path)
+    if (!guild) {
+      req.flash('error', "The bot isn't in that guild !")
+      return res.redirect(`/addbot/${req.params.gid}`)
+    }  
 
-    let fetchguilds = discord.client.guilds.fetch()
-    let bannerFile = req.files.bannerFile;
+    // check if guild has 7 boosts boosts --> level 2 ( can have a banner or not )
 
-    function check(path) {
-      if(!fs.existsSync(path)) {
-        let path2 = `./icons/${ID + ext}`
-        let a = `./icons/${ID + ext}`
-        bannerFile.rename(a, function(err) { if (err) throw err })
-        bannerFile.mv(path2, function(err) { if (err) throw err })
-        return path2
-      } else {
-        bannerFile.mv(path, function(err) {
-          if (err) 
-            return res.status(500).send(err);
-        });
-        return false
-      }
+    if (guild.premiumSubscriptionCount << 7) {
+      req.flash('error', `${guild.name} doesn't have unlocked the banner ! Boost it to level 2 ( 7 boosts ) to unlock it.`)
+      return res.redirect(`/guild/${req.params.gid}/manage`)
     }
 
-    delay(3000).then(() => {
-  
-      fetchguilds.then(() => {
-  
-        let guild = discord.client.guilds.cache.get(req.params.gid)
-  
-        if(check(path)) {
-          guild.setBanner(path2)
-          delay(3000).then(fs.unlinkSync(path2))
-        } else {
-          guild.setBanner(path)
-          delay(3000).then(fs.unlinkSync(path))
-        }
-                
-        req.flash('success', `Icon ${bannerFile.name} successfully uploaded for guild ${guild.name}!`)
+    const fetchmembers = guild.members.fetch({ cache: true })
+
+    // put all members in cache
+
+    fetchmembers.then(() => {
+      let member = guild.members.cache.get(req.user.id)
+
+      // check if member is in the guild
+
+      if (!member) {
+        req.flash('error', 'You are not in that guild !')
+        return res.redirect('/dash')
+      }
+
+      // check if member has manage guild or admin permissions
+
+      let managePerm = Permissions.FLAGS.MANAGE_GUILD
+      let adminPerm = Permissions.FLAGS.ADMINISTRATOR
+
+      if (!member.permissions.has(managePerm) && !member.permissions.has(adminPerm) && !member.roles.highest.permissions.has(managePerm) && !member.roles.highest.permissions.has(adminPerm) && guild.ownerId !== req.user.id) {
+          req.flash('error', 'You are not allowed to manage this guild !')
+          return res.redirect('/dash')
+      }
+
+      // check if there are any files
+
+      if (!req.files || Object.keys(req.files).length === 0) {
+        return req.flash('error', `No file was uploaded, please try again!`), 
         res.redirect(`/guild/${req.params.gid}/manage`)
+      } 
+      
+      let sampleFile = req.files.bannerFile;
+      let path = `./banners/${sampleFile.name}`
+
+      // if file with that name isn't deleted, it deletes it
+
+      if (fs.existsSync(path)) fs.rmSync(path)
+
+      // move the file to the temporary folder
+      
+      sampleFile.mv(path)
+
+      // function to set banner
+
+      function setb(path) {
+        guild.setBanner(path)
+        delay(3000).then(() => { 
+          fs.rmSync(path)
+        })
+      }
+
+      // wait for the file to upload and use the function
+
+      delay(3000).then(() => {
+        setb(path)
+
+        req.flash("success", `Banner ${sampleFile.name} uploaded sucessfully !`)
+        return res.redirect(`/guild/${req.params.gid}/manage`)
       })
     })
   })
