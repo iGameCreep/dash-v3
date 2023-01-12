@@ -2,12 +2,9 @@ const express = require('express');
 const router = express.Router();
 const discord = require('../bot')
 const { ensureAuthenticated, forwardAuthenticated } = require('../auth/auth');
-const dateformat = require('dateformat');
 const config = require('../config/config.json')
-const ver = require('../config/version.json')
 const { Permissions } = require('discord.js')
 
-const number = require('easy-number-formatter')
 const jsonfile = require('jsonfile')
 
 const themes = "./config/theme.json"
