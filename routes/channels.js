@@ -19,7 +19,7 @@ router.get('/guild/:gid/channels', ensureAuthenticated,(req, res) => {
     var theme = jsonfile.readFileSync(themes);
     let fetchguilds = discord.client.guilds.fetch({ cache: true, withCounts: true })
 
-    fetchguilds.then(gs => {
+    fetchguilds.then(() => {
         let guild = discord.client.guilds.cache.get(gid)
 
         // check if bot is in the guild
@@ -52,7 +52,7 @@ router.get('/guild/:gid/channels', ensureAuthenticated,(req, res) => {
             let adminPerm = Permissions.FLAGS.ADMINISTRATOR
     
             if (!user.permissions.has(channelPerm) && !user.permissions.has(adminPerm) && !highest.permissions.has(channelPerm) && !highest.permissions.has(adminPerm) && guild.ownerId !== req.user.id) {
-                req.flash('error', 'You are allowed to manage this guild !')
+                req.flash('error', 'You are not allowed to manage this guild !')
                 return res.redirect('/dash')
             }
     
