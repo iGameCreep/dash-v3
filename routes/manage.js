@@ -130,6 +130,68 @@ router.post('/guild/:gid/name/edit', ensureAuthenticated,function(req, res) {
   })
 })
 
+// SET SYSTEM AND RULES CHANNELS
+
+router.post('/guild/:gid/channels/set', ensureAuthenticated, (req, res) => {
+  console.log(req.url)
+  let gid = req.params.gid
+  
+  let rulesid = req.query.rules
+  let systemid = req.query.system
+
+  let fetchguilds = discord.client.guilds.fetch({ cache: true, withCounts: true })
+
+  fetchguilds.then(() => {
+    let guild = discord.client.guilds.cache.get(gid)
+    // check if bot is in the guild
+
+    if (!guild) {
+      req.flash('error', "The bot isn't in this guild !")
+      res.redirect(`/addbot/${gid}`)
+    }
+
+    let fetchmembers = guild.members.fetch({ cache: true })
+
+      // put all members in cache
+
+      fetchmembers.then(() => {
+        let user = guild.members.cache.get(req.user.id)
+
+        // check if user is in the guild
+
+        if (!user) {
+            req.flash('error', 'You are not in this guild !')
+            return res.redirect('/dash')
+        }
+
+        // check if user has manage channels or admin permissions
+
+        let highest = user.roles.highest
+        let managePerm = Permissions.FLAGS.MANAGE_GUILD
+        let adminPerm = Permissions.FLAGS.ADMINISTRATOR
+
+        if (!user.permissions.has(managePerm) && !user.permissions.has(adminPerm) && !highest.permissions.has(managePerm) && !highest.permissions.has(adminPerm) && guild.ownerId !== req.user.id) {
+            req.flash('error', 'You are not allowed to manage this guild !')
+            return res.redirect('/dash')
+        }
+
+        let ruleschannel = guild.channels.fetch(rulesid)
+
+        ruleschannel.then((ruleschannel) => {
+          let systemchannel = guild.channels.fetch(systemid)
+
+          systemchannel.then((systemchannel) => {
+            guild.setRulesChannel(ruleschannel).catch(console.log)
+            guild.setSystemChannel(systemchannel).catch(console.log)
+
+            req.flash('success', `Sucessfully set guild ${guild.name} rules channel to ${ruleschannel.name} and system channel to ${systemchannel.name} !`)
+            return res.redirect(`/guild/${gid}/manage`)
+          })
+      })
+    })
+  })
+})
+
 // UPLOAD ICON FOR GUILD
 
 router.post('/guild/:gid/upload/icon', ensureAuthenticated,function(req, res) {

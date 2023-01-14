@@ -192,7 +192,37 @@
                               <input type="text" id="community" name="community" class="form-control" value="<%= guild.features?.includes('COMMUNITY') %>" disabled><br>
 
                               <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save">
-                            </form>      
+                            </form>    
+                            <br><br>
+                            <form id="guild-channels" action="/guild/<%= guild.id %>/channels/set" method="post">
+                              <label for="rules"><strong>Guild Rules Channels:</strong></label>
+                              <select class="custom-select" name="rules" id="rules">
+                                <% guild.channels.cache.each((channel) => { %>
+                                  <% if (channel.type === "GUILD_CATEGORY" || channel.type === "GUILD_VOICE" || channel.type.includes("THREAD") || channel.type === "GUILD_STAGE_VOICE" || channel.type === "GUILD_STORE") return; %>
+                                  <% if (guild.rulesChannelId === channel.id) { %>
+                                    <option value="<%= channel.id %>" selected><%= channel.name %></option>
+                                  <% } else { %>
+                                    <option value="<%= channel.id %>"><%= channel.name %></option>
+                                  <% } %>
+                                <% }) %>
+                              </select>
+
+                              <br><br>
+
+                              <label for="system"><strong>Guild System Channels:</strong></label>
+                              <select class="custom-select" name="system" id="system">
+                                <% guild.channels.cache.each((channel) => { %>
+                                  <% if (channel.type === "GUILD_CATEGORY" || channel.type === "GUILD_VOICE" || channel.type.includes("THREAD") || channel.type === "GUILD_STAGE_VOICE" || channel.type === "GUILD_STORE") return; %>
+                                  <% if (guild.systemChannelId === channel.id) { %>
+                                    <option value="<%= channel.id %>" selected><%= channel.name %></option>
+                                  <% } else { %>
+                                    <option value="<%= channel.id %>"><%= channel.name %></option>
+                                  <% } %>
+                                <% }) %>
+                              </select>
+                              <br><br>
+                              <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save">
+                            </form>  
                         </div>
                   </div>
                         <div class="card bg-secondary">

@@ -171,14 +171,28 @@
 
                                 <input type="submit" class="btn btn-primary btn-lg btn-block" onclick="submit()" value="Change Channel Name">
                             </form>
-                            <br><br>
-                            <% if (guild.features?.includes("COMMUNITY")) { %>
-                              <form id="rule-channel" action="/guild/<%= guild.id %>/channel/<%= channel.id %>/rules" method="POST">
-                                <label for="rule-checkbox"><strong>Set Channel As Rules Channel:</strong></label><br>
-                                <input type="checkbox" class="checkbox" name="rule-checkbox" id="rule-checkbox"><br>
-
+                            <br>
+                            <% if (guild.features?.includes("COMMUNITY") && channel.type === "GUILD_TEXT" || channel.type === "GUILD_NEWS" ) { %>
+                              <form id="type" action="/guild/<%= guild.id %>/channel/<%= channel.id %>/type" method="POST">
+                                <br>
+                                <label for="type"><strong> Channel Type:</strong></label>
+                                <% if (guild.rulesChannelId === channel.id) { %>
+                                  <p>As this channel is configured as the guild RULES channel, please change the rules channel <a href="/guild/<%= guild.id %>/manage">here</a> and then change the channel type here !</p>
+                                <% } else if (guild.systemChannelId === channel.id) { %>
+                                  <p>As this channel is configured as the guild SYSTEM channel, please change the system channel <a href="/guild/<%= guild.id %>/manage">here</a> and then change the channel type here !</p>
+                                <% } else { %>
+                                  <select class="custom-select" name="type" id="type">
+                                    <% if (channel.type === "GUILD_NEWS") { %>
+                                      <option value="announcements" name="announcements" id="announcements" selected>Announcements Channel</option>
+                                    <% } %>
+                                    <% if (channel.type === "GUILD_TEXT" && guild.rulesChannelId !== channel.id && guild.systemChannelId !== channel.id) { %>
+                                      <option value="text" name="text" id="text" selected>Text Channel</option>
+                                    <% } %>
+                                <% } %>
+                                </select>
+                                <br>
                                 <br><input type="submit" class="btn btn-primary btn-lg btn-block" onclick="submit()" value="Save">
-                              </form>  
+                              </form>
                             <% } %>
                         </div>
                     </div>
