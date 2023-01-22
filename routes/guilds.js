@@ -13,7 +13,7 @@ const { PermissionsBitField } = require("discord.js")
 router.get('/guilds',ensureAuthenticated,(req,res) =>{
     var theme = jsonfile.readFileSync(themes);
     let guilds = discord.client.guilds.cache
-    res.render('home/manage',{
+    res.render('home/guilds',{
         Permissions: Discord.Permissions,
         PermissionsBitField : PermissionsBitField,
         manage: Discord.Permissions.FLAGS.MANAGE_GUILD,

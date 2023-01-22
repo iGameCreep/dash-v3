@@ -7,7 +7,7 @@ const lolcatjs = require('lolcatjs');
 
 module.exports = (client) => {
     console.clear()
-    var banner = figlet.textSync('Discord BOT Dashboard V2', {
+    var banner = figlet.textSync('Discord BOT Dashboard V3', {
         font: 'Small',
         horizontalLayout: 'default',
         width: 1000,
