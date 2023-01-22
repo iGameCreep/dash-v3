@@ -101,27 +101,39 @@
                     <h4>Roles</h4>
                     <p class="text-muted"> See all the roles of the guild <strong>"<%= guild.name %>"</strong></p>
                     <div class="row">
-                        <% roles.each(function(role) { %>
+                      <div class="col-lg-4">
+                        <div class="card">
+                          <% if (guild.iconURL()) { %>
+                            <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="<%= guild.iconURL() %>" alt=""></figure> Informations</div>
+                          <% } else { %>
+                            <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://cdn.glitch.com/82fe990a-7942-42e3-9790-39807ccdb9f6%2Ficon-404-dark.png?v=1602427904949" alt=""></figure> Informations</div>
+                          <% } %>
+                          <div class="card-body">
+                            <p class="card-text"><strong>Number Of Roles:</strong> <%= guild.roles.cache.size %></p>
+                          </div>
+                        </div>
+                      </div>
+                      <% roles.each(function(role) { %>
                         <div class="col-lg-4">
-                            <div class="card">
-                                <% if (role.iconURL()) { %>
-                                    <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="<%= role.iconURL() %>" alt=""></figure> <%= role.name %></div>
-                                <% } else { %>
-                                    <% if (role.hexColor !== "#000000") { %>
-                                        <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/Xy5pvQN/test-icon.png" style="background-color: <%= role.hexColor %> ;"></figure> <%= role.name %></div>
-                                    <% } else { %>
-                                        <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/Xy5pvQN/test-icon.png" style="background-color: #808080 ;"></figure> <%= role.name %></div>
-                                    <% } %>
-                                <% } %>
-                                <div class="card-body">
-                                    <p class="card-text"><strong>Role Name:</strong> <%= role.name %> </p>
-                                    <p class="card-text"><strong>Role ID:</strong> <%= role.id %> </p>
-                                    <p class="card-text"><strong>Members:</strong> <%= role.members.size %> </p>
-                                </div>
-                                <div class="card-footer-item">
-                                    <a type="button" class="btn btn-primary" href="/guild/<%= guild.id %>/role/<%= role.id %>/manage"> Manage Role</a>
-                                </div>
+                          <div class="card">
+                            <% if (role.iconURL()) { %>
+                              <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="<%= role.iconURL() %>" alt=""></figure> <%= role.name %></div>
+                            <% } else { %>
+                              <% if (role.hexColor !== "#000000") { %>
+                                <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/Xy5pvQN/test-icon.png" style="background-color: <%= role.hexColor %> ;"></figure> <%= role.name %></div>
+                              <% } else { %>
+                                <div class="card-header"><figure class="user-avatar user-avatar-lg"><img src="https://i.ibb.co/Xy5pvQN/test-icon.png" style="background-color: #808080 ;"></figure> <%= role.name %></div>
+                              <% } %>
+                            <% } %>
+                            <div class="card-body">
+                              <p class="card-text"><strong>Role Name:</strong> <%= role.name %> </p>
+                              <p class="card-text"><strong>Role ID:</strong> <%= role.id %> </p>
+                              <p class="card-text"><strong>Members:</strong> <%= role.members.size %> </p>
                             </div>
+                            <div class="card-footer-item">
+                              <a type="button" class="btn btn-primary" href="/guild/<%= guild.id %>/role/<%= role.id %>/edit"> Edit Role</a>
+                            </div>
+                          </div>
                         </div>
                         <% }); %>
                     </div>
