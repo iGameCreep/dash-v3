@@ -18,7 +18,6 @@ console.log(chalk.red("Loading events..."))
 for (const file of events) {
     const event = require(`./events/${file}`);
     console.log(chalk.green(`[+] ${file.split('.')[0]}`));
-    console.log(file.split('.')[0])
     client.on(file.split('.')[0], event.bind(null, client));
     delete require.cache[require.resolve(`./events/${file}`)];
 };

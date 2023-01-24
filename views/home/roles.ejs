@@ -111,6 +111,9 @@
                           <div class="card-body">
                             <p class="card-text"><strong>Number Of Roles:</strong> <%= guild.roles.cache.size %></p>
                           </div>
+                          <div class="card-footer-item">
+                            <a type="button" href="/guild/<%= guild.id %>/roles/create" class="btn btn-primary"> Create a role</a>
+                          </div>
                         </div>
                       </div>
                       <% roles.each(function(role) { %>
