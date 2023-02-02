@@ -7,7 +7,7 @@ const number = require('easy-number-formatter')
 const jsonfile = require('jsonfile')
 const config = require("../config/config.json")
 const Discord = require("discord.js")
-const { PermissionsBitField } = require("discord.js")
+const { PermissionsBitField, Permissions } = require("discord.js")
 const ver = require('../config/version.json');
 const auth = require('../auth/auth');
 
@@ -21,14 +21,18 @@ router.get('/guild/:gid/user/:id',ensureAuthenticated,(req,res) => {
 
     fetchmembers.then((members) => {
         const user = guild.members.cache.get(req.params.id)
-        let author = guild.members.fetch(profile.id).catch(console.log)
+        let author = guild.members.cache.get(req.user.id)
 
         if (!author) {
             req.flash('error', 'You are not in this guild !')
             return res.redirect('/dash')
         }
 
-        if (!author.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && !author.permissions.has(Permissions.FLAGS.ADMINISTRATOR && author.id !== guild.ownerId)) {
+        let highest = author.roles.highest
+        let adminPerm = Permissions.FLAGS.ADMINISTRATOR
+        let modPerm = Permissions.FLAGS.MODERATE_MEMBERS
+
+        if (!author.permissions.has(adminPerm) && !author.permissions.has(modPerm) && highest.permissions.has(adminPerm) && highest.permissions.has(modPerm) && author.id !== guild.ownerId) {
             req.flash('error', 'You are allowed to manage this guild !')
             return res.redirect('/dash')
         }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title> Warn <%= member.user.username %>#<%= member.user.discriminator %> - <%= guild.name %>| <%=client.user.username%> </title>
+    <title> Create a role - <%= guild.name %>| <%=client.user.username%> </title>
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
@@ -97,27 +97,30 @@
                         <h4 class="alert-heading"> Success! </h4>
                         <p class="mb-0"><%=success%></p>
                       </div>
-                  <% } %> 
-                  <% if(error != ''){ %>
-                    <div class="alert alert-warning has-icon alert-dismissible fade show">
-                      <button type="button" class="close" data-dismiss="alert">×</button>
-                      <div class="alert-icon">
-                        <span class="fa fa-bullhorn"></span>
+                    <% } %> 
+                    <% if(error != ''){ %>
+                      <div class="alert alert-warning has-icon alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <div class="alert-icon">
+                          <span class="fa fa-bullhorn"></span>
+                        </div>
+                        <h4 class="alert-heading"> Warning! </h4>
+                        <p class="mb-0"><%=error%></p>
                       </div>
-                      <h4 class="alert-heading"> Warning! </h4>
-                      <p class="mb-0"><%=error%></p>
-                    </div>
-                <% } %> 
-                    <h4> Warn</h4>
+                    <% } %> 
+                    <h4> New Role</h4>
                         <div class="card bg-secondary">
-                          <div class="card-header"> <%= member.user.username %>#<%= member.user.discriminator %></div>
+                          <div class="card-header"> Create a role</div>
                           <div class="card-body">
-                            <p class="card-text"> Please add a reason for the warn.<br></p>       
-                            <form aria-disabled="true" id="config-form" action="/warn/new/<%= guild.id %>/<%= member.user.id %>" method="POST">
-                              <label for="reason"><strong>Reason:</strong></label><br>
-                              <input type="text" id="reason" name="reason" class="form-control" value=""><br>
+                            <p class="text-muted"> Here are all the options for the role !<br></p>       
+                            <form id="config-form" action="/guild/<%= guild.id %>/roles/new" method="POST">
+                              <label for="name"><strong>Role Name:</strong></label><br>
+                              <input type="text" id="name" name="name" class="form-control" value="" required><br>
 
-                              <input type="submit" class="btn btn-primary btn-lg btn-block" value="Warn user">
+                              <label for="color"><strong>Role Color:</strong></label><br>
+                              <input type="color" id="color" name="color" class="form-control" style="width: 200px;" required><br>
+
+                              <input type="submit" class="btn btn-primary btn-lg btn-block" value="Create Role">
                             </form>      
                         </div>
                   </div>

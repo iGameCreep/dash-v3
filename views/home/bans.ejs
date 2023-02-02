@@ -134,7 +134,7 @@
                                     <p class="card-text"><strong>User:</strong> <%= user.username %>#<%= user.discriminator %></p>
                                     <p class="card-text"><strong>User ID:</strong> <%= user.id %></p>
                                     <p class="card-text"><strong>Reason:</strong> <%= ban.reason %></p>  
-                                    <div class="card-footer-item"><button type="button" class="btn btn-warning" data-toggle="modal" data-target="#unban-<%= user.id %>">Unban Member</div>
+                                    <div class="card-footer-item"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#unban-<%= user.id %>">Unban Member</div>
                                   </div>
                                 </div>
                                 <div class="modal modal-alert fade" id="unban-<%= user.id %>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalAlertDangerLabel" aria-hidden="true">
@@ -148,9 +148,8 @@
                                         <p> Are you sure that you want to unban <strong><%= user.username %>#<%= user.discriminator %> ( <%= user.id %> )</strong> ?</p> 
                                       </div>
                                       <div class="modal-footer">
-                                        <p class="text-muted">Not working yet, will be working in a future update</p>
-                                          <form action="/ban/remove/<%= guild.id %>/<%= user.id %>" method="POST">
-                                            <button type="button" class="btn btn-warning" onclick="submit()" disabled>Unban</button>                               
+                                          <form action="/guild/<%= guild.id %>/unban/<%= user.id %>" method="POST">
+                                            <button type="button" class="btn btn-warning" onclick="submit()">Unban</button>                               
                                           </form>
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                       </div>

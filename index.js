@@ -55,6 +55,7 @@ app.use('/', require('./routes/users.js'));
 app.use('/', require('./routes/roles.js'));
 app.use('/', require('./routes/channels.js'));
 app.use('/', require('./routes/sanctions.js'));
+app.use('/', require('./routes/bans.js'));
 
 
 app.use('/login', require('./routes/login.js'));

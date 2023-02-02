@@ -98,6 +98,16 @@
                           <p class="mb-0"><%=success%></p>
                         </div>
                     <% } %> 
+                    <% if(error != ''){ %>
+                      <div class="alert alert-warning has-icon alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <div class="alert-icon">
+                          <span class="fa fa-bullhorn"></span>
+                        </div>
+                        <h4 class="alert-heading"> Warning! </h4>
+                        <p class="mb-0"><%=error%></p>
+                      </div>
+                    <% } %>
                     <h4><%= guild.name %> 's members</h4>
                     <p class="text-muted"> Here, you can see and manage all the members of "<%= guild.name %>"</p>
                     <div class="row">
