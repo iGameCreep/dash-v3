@@ -13,6 +13,12 @@ const { PermissionsBitField } = require("discord.js")
 router.get('/guilds',ensureAuthenticated,(req,res) =>{
     var theme = jsonfile.readFileSync(themes);
     let guilds = discord.client.guilds.cache
+
+    if (!config.Admin.includes(req.user.id)) {
+        req.flash('error', `You are not allowed to access this page.`)
+        return res.redirect('/dash')
+    }
+    
     res.render('home/guilds',{
         Permissions: Discord.Permissions,
         PermissionsBitField : PermissionsBitField,
@@ -57,6 +63,12 @@ router.get("/addbot/:id", ensureAuthenticated,(req,res) =>{
 })
 
 router.post('/guilds/leave/:id', ensureAuthenticated,(req,res) =>{
+
+    if (!config.Admin.includes(req.user.id)) {
+        req.flash('error', `You are not allowed to access this page.`)
+        return res.redirect('/dash')
+    }
+
     discord.client.guilds.cache.get(req.params.id).leave().then(value => {
         req.flash('success', `Succesfully left guild "${value.name}"`)
         res.redirect('/guilds')

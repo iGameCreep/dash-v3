@@ -13,9 +13,15 @@ const themes = "./config/theme.json"
 const fs = require("fs");
 
 router.get('/settings', ensureAuthenticated,(req, res) => {
-    var config = jsonfile.readFileSync(file);
-    var theme = jsonfile.readFileSync(themes);
-    fs.readdir("./themes/", (err, files) => {
+
+  if (!config.Admin.includes(req.user.id)) {
+    req.flash('error', `You are not allowed to access this page.`)
+    return res.redirect('/dash')
+  }
+
+  var config = jsonfile.readFileSync(file);
+  var theme = jsonfile.readFileSync(themes);
+  fs.readdir("./themes/", (err, files) => {
     res.render('home/settings',{
         profile:req.user,
         client:discord.client,
@@ -25,11 +31,15 @@ router.get('/settings', ensureAuthenticated,(req, res) => {
         theme:theme,
         config: config
     })
-    })
+  })
 })
 
 router.post('/settings/config',ensureAuthenticated,(req,res) =>{
-    json.update('./config/config.json',
+  if (!config.Admin.includes(req.user.id)) {
+    req.flash('error', `You are not allowed to access this page.`)
+    return res.redirect('/dash')
+  }
+  json.update('./config/config.json',
     {
       clientID:`${req.body.clientID}`,
       clientSecret:`${req.body.clientSecret}`,
@@ -45,6 +55,10 @@ router.post('/settings/config',ensureAuthenticated,(req,res) =>{
 })
 
 router.post('/settings/dashboard',ensureAuthenticated,(req,res) =>{
+  if (!config.Admin.includes(req.user.id)) {
+    req.flash('error', `You are not allowed to access this page.`)
+    return res.redirect('/dash')
+  }
     json.update('./config/theme.json',{theme:`${req.body.theme}`}).then(function(dat) { 
         req.flash('success', 'Theme Updated!')
         res.redirect('/settings')
@@ -54,6 +68,11 @@ router.post('/settings/dashboard',ensureAuthenticated,(req,res) =>{
 router.post('/settings/upload/theme', ensureAuthenticated,function(req, res) {
     let sampleFile;
     let uploadPath;
+
+    if (!config.Admin.includes(req.user.id)) {
+      req.flash('error', `You are not allowed to access this page.`)
+      return res.redirect('/dash')
+    }
   
     if (!req.files || Object.keys(req.files).length === 0) {
       return req.flash('error', `No file was uploaded, please try again!`), 
