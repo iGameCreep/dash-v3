@@ -10,8 +10,6 @@ const config = require("../config/config.json")
 const Discord = require("discord.js")
 const { PermissionsBitField, Permissions } = require("discord.js")
 const fs = require("fs")
-const ppath = require("path");
-const { count } = require('console');
 
 // define function to wait
 

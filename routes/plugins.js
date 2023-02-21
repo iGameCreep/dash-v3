@@ -13,8 +13,7 @@ const themes = "./config/theme.json"
 router.get('/plugins', ensureAuthenticated,(req, res) => {
   var theme = jsonfile.readFileSync(themes);
     const commandsToggle = jsonfile.readFileSync('./config/settings.json');
-    fs.readdirSync("../commands").forEach(folder => console.log(folder))
-    fs.readdir("../commands", (err, files) => {
+    fs.readdir("./commands", (err, files) => {
       console.log(files)
     res.render('home/plugins',{
         profile:req.user,
